@@ -4,11 +4,14 @@ services:
   backend:
     build:
       context: .
-      dockerfile: ./docker/python/DockerFile
+      dockerfile: ./docker/nodeJs/DockerFile
     volumes:
       - ./backend:/usr/src/app/
+    depends_on:
+      - db
     ports:
-      - "8000:8000"
+      - "8080:8000"
+      - "9229:9229"
 
   frontend:
     build:
@@ -16,8 +19,6 @@ services:
       dockerfile: ./docker/nodeFront/DockerFile
     volumes:
       - ./frontend:/usr/src/app/
-    ports:
-      - "8001:8080"
 
   db:
     image: postgres:13
@@ -29,6 +30,14 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - "54321:5432"
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/DockerFile
+    ports:
+      - "8000:8000"
+      - "8001:8001"
 
 volumes:
   db-data:
